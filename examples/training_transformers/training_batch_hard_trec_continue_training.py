@@ -37,7 +37,7 @@ import urllib.request
 
 # Inspired from torchnlp
 def trec_dataset(
-    directory="sentence-transformers/datasets/trec/",
+    directory="datasets/trec/",
     train_filename="train_5500.label",
     test_filename="TREC_10.label",
     validation_dataset_nb=500,
@@ -120,7 +120,17 @@ dataset_train = SentenceLabelDataset(
     provide_negative=False,
 )
 train_dataloader = DataLoader(dataset_train, shuffle=True, batch_size=train_batch_size)
-train_loss = losses.BatchHardTripletLoss(sentence_embedder=model)
+
+### Triplet losses ####################
+### There are 3 triplet loss variants:
+### - BatchHardTripletLoss
+### - BatchHardSoftMarginTripletLoss
+### - BatchSemiHardTripletLoss
+#######################################
+
+#train_loss = losses.BatchHardTripletLoss(sentence_embedder=model)
+#train_loss = losses.BatchHardSoftMarginTripletLoss(sentence_embedder=model)
+train_loss = losses.BatchSemiHardTripletLoss(sentence_embedder=model)
 
 logging.info("Read TREC val dataset")
 dataset_dev = SentenceLabelDataset(examples=val, model=model)
